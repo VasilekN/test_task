@@ -1,23 +1,31 @@
 services:
 
-    mysql:
-        container_name: mysql
-        image: mysql:8
+  mysql:
+    container_name: mysql
+    image: mysql:8
 
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_USER: admin
-            MYSQL_PASSWORD: admin
-            MYSQL_DATABASE: database
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: database
 
-        ports:
-            - 3306:3306
+    ports:
+      - 3336:3306
 
-        restart: unless-stopped
+    restart: unless-stopped
 
-        healthcheck:
-            test: [ 'CMD', 'mysqladmin', 'ping', '-proot' ]
-            interval: 1m
-            timeout: 5s
-            retries: 5
-            start_period: 3m
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '-proot' ]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 3m
+
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - mysql
