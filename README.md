@@ -30,8 +30,3 @@ $ docker compose down
 
 By default, the server will be available at:
 http://127.0.0.1:8000
-
-The Django admin site is activated by default. You can open a Web browser and go to “/admin/” on your local domain –
-e.g., http://127.0.0.1:8000/admin/.
-Try logging in with the superuser account which you created. You should see the Django admin index page.
-
