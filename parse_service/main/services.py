@@ -1,51 +1,52 @@
 import requests
 from bs4 import BeautifulSoup
+from typing import Dict, List, Optional, Any
 from .db import save_page, get_page_by_id, get_page_data
+from .models import ParsedPage
 
 
-def parse_content(response_text):
+def parse_content(response_text: str) -> Dict[str, Any]:
     soup = BeautifulSoup(response_text, "html.parser")
 
-    h1_count = len(soup.find_all("h1"))
-    h2_count = len(soup.find_all("h2"))
-    h3_count = len(soup.find_all("h3"))
-    a_tags = set([a.get("href") for a in soup.find_all("a", href=True)])
+    h1_count: int = len(soup.find_all("h1"))
+    h2_count: int = len(soup.find_all("h2"))
+    h3_count: int = len(soup.find_all("h3"))
+    a_tags: set = set([a.get("href") for a in soup.find_all("a", href=True)])
 
-    data = {
+    data: Dict[str, Any] = {
         "h1_count": h1_count,
         "h2_count": h2_count,
         "h3_count": h3_count,
         "links": list(a_tags)
     }
-
     return data
 
 
-def add_new_page(url):
+def add_new_page(url: str) -> Optional[int]:
     try:
-        response = requests.get(url, timeout=10)
+        response: requests.Response = requests.get(url, timeout=10)
         if not response.ok:
             raise RuntimeError("Failed to fetch url")
     except:
         raise RuntimeError("Failed to fetch url")
 
-    page_data = parse_content(response.text)
+    page_data: Dict[str, Any] = parse_content(response.text)
     return save_page(page_data, url)
 
 
-def get_page_data_by_id(object_id):
+def get_page_data_by_id(object_id: int) -> Optional[ParsedPage]:
     return get_page_by_id(object_id)
 
 
-def get_page_list(sort_field, field_name):
+def get_page_list(sort_field: str, field_name: Optional[str]) -> List[Dict[str, Any]]:
     if field_name is None:
-        order_param = "created_at"
+        order_param: str = "created_at"
     else:
-        order_param = f"{sort_field}links" if field_name == "a" else f"{sort_field}{field_name}_count"
+        order_param: str = f"{sort_field}links" if field_name == "a" else f"{sort_field}{field_name}_count"
 
-    parsed_pages = get_page_data(order_param)
+    parsed_pages: List[ParsedPage] = get_page_data(order_param)
 
-    data = []
+    data: List[Dict[str, Any]] = []
     for page in parsed_pages:
         data.append({
             "url": page.url,
