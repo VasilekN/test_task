@@ -29,3 +29,5 @@ services:
       - 8000:8000
     depends_on:
       - mysql
+    command: >
+      sh -c "/backend/wait-for-it.sh mysql:3306 -- python /backend/parse_service/manage.py migrate && python /backend/parse_service/manage.py runserver 0.0.0.0:8000"
