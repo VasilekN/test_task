@@ -11,8 +11,10 @@ def save_page(page_data, url):
     )
     return saved_page.id
 
+
 def get_page_by_id(object_id):
     return ParsedPage.objects.get(id=object_id)
+
 
 def get_page_data(order_param):
     return ParsedPage.objects.all().order_by(order_param)

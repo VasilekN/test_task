@@ -1,6 +1,7 @@
 import unittest
 from .services import parse_content
 
+
 class TestParseContent(unittest.TestCase):
     def test_empty_html(self):
         html = ""
